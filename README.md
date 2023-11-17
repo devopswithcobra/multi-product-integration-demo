@@ -140,4 +140,4 @@ Once the run is complete, you can access each tool by:
 vault kv get -mount=hashistack-admin/ nomad_bootstrap/SecretID
 ```
 
-### Stay Tuned for a video walkthrough of this demo and environment 
+### Video walkthrough of this demo and environment availble upon request 
