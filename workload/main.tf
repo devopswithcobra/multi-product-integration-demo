@@ -5,23 +5,18 @@ terraform {
       version = "~> 0.0.6"
     }
 
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.8.0"
-    }
-
     vault = {
-      source = "hashicorp/vault"
+      source  = "hashicorp/vault"
       version = "~> 3.18.0"
     }
 
     nomad = {
-      source = "hashicorp/nomad"
+      source  = "hashicorp/nomad"
       version = "2.0.0-beta.1"
     }
 
     consul = {
-      source = "hashicorp/consul"
+      source  = "hashicorp/consul"
       version = "2.18.0"
     }
   }
@@ -31,10 +26,10 @@ provider "doormat" {}
 
 provider "consul" {
   address = "${data.terraform_remote_state.hcp_clusters.outputs.consul_public_endpoint}:443"
-  token = data.terraform_remote_state.hcp_clusters.outputs.consul_root_token
-  scheme  = "https" 
+  token   = data.terraform_remote_state.hcp_clusters.outputs.consul_root_token
+  scheme  = "https"
 }
- 
+
 data "doormat_aws_credentials" "creds" {
   provider = doormat
   role_arn = "arn:aws:iam::${var.aws_account_id}:role/tfc-doormat-role_7_workload"
@@ -99,7 +94,7 @@ data "vault_kv_secret_v2" "bootstrap" {
 }
 
 provider "nomad" {
-  address = data.terraform_remote_state.nomad_cluster.outputs.nomad_public_endpoint
+  address   = data.terraform_remote_state.nomad_cluster.outputs.nomad_public_endpoint
   secret_id = data.vault_kv_secret_v2.bootstrap.data["SecretID"]
 }
 
@@ -116,8 +111,8 @@ resource "null_resource" "wait_for_db" {
 }
 
 data "consul_service" "mongo_service" {
-    depends_on = [ null_resource.wait_for_db ]
-    name = "demo-mongodb"
+  depends_on = [null_resource.wait_for_db]
+  name       = "demo-mongodb"
 }
 
 resource "vault_database_secrets_mount" "mongodb" {
@@ -168,20 +163,16 @@ resource "nomad_job" "frontend" {
   jobspec = file("${path.module}/nomad-jobs/frontend.hcl")
 }
 
-# resource "aws_lb_target_group" "frontend_tg" {
-#   name     = "frontend-tg"
-#   port     = 80
-#   protocol = "HTTP"
-#   vpc_id   = data.terraform_remote_state.networking.outputs.vpc_id
-# }
+resource "aws_lb_target_group" "frontend_tg" {
+  name     = "frontend-tg"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = data.terraform_remote_state.networking.outputs.vpc_id
+}
 
-# resource "aws_lb_target_group_attachment" "frontend_tg" {
-#   target_group_arn = aws_lb_target_group.frontend_tg.arn
-#   port             = 80
-#   target_id        = data.terraform_remote_state.nomad_nodes.outputs.nomad_client_x86_asg
-# }
+resource "aws_lb_target_group_attachment" "frontend_tg" {
+  target_group_arn = aws_lb_target_group.frontend_tg.arn
+  port             = 80
+  target_id        = data.terraform_remote_state.nomad_nodes.outputs.nomad_client_x86_asg
+}
 
-# // Optional Full KVM based VM Example
-# resource "nomad_job" "fullvm" {
-#  jobspec = file("${path.module}/nomad-jobs/mongodb-vmdk.hcl")
-# }
