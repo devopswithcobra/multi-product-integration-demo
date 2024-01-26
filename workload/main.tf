@@ -170,9 +170,9 @@ resource "aws_lb_target_group" "frontend_tg" {
   vpc_id   = data.terraform_remote_state.networking.outputs.vpc_id
 }
 
-resource "aws_lb_target_group_attachment" "frontend_tg" {
-  target_group_arn = aws_lb_target_group.frontend_tg.arn
-  port             = 80
-  target_id        = data.terraform_remote_state.nomad_nodes.outputs.nomad_client_x86_asg
-}
+#resource "aws_lb_target_group_attachment" "frontend_tg" {
+#  target_group_arn = aws_lb_target_group.frontend_tg.arn
+#  port             = 80
+#  target_id        = data.terraform_remote_state.nomad_nodes.outputs.nomad_client_x86_asg
+#}
 
