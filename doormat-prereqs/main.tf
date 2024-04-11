@@ -6,6 +6,10 @@ terraform {
   }
 }
 
+provider "aws" {
+  region = var.region
+}
+
 variable "tfc_organization" {
   type    = string
   default = ""
@@ -13,12 +17,12 @@ variable "tfc_organization" {
 
 variable "tfc_workspace_names" {
   type    = set(string)
-  default = ["1_networking", "5_nomad-cluster", "4_boundary-config", "6_nomad-nodes"]
+  default = ["1_networking", "5_nomad-cluster", "4_boundary-config", "6_nomad-nodes", "7_workload"]
 }
 
 resource "aws_iam_role" "doormat_role" {
   for_each = var.tfc_workspace_names
-  name = "tfc-doormat-role_${each.key}"
+  name     = "tfc-doormat-role_${each.key}"
   tags = {
     hc-service-uri = "app.terraform.io/${var.tfc_organization}/${each.key}"
   }
@@ -51,3 +55,4 @@ data "aws_iam_policy_document" "doormat_policy" {
     resources = ["*"]
   }
 }
+

@@ -1,17 +1,17 @@
 terraform {
   required_providers {
     boundary = {
-      source = "hashicorp/boundary"
+      source  = "hashicorp/boundary"
       version = "~> 1.1.9"
     }
 
     vault = {
-      source = "hashicorp/vault"
+      source  = "hashicorp/vault"
       version = "~> 3.18.0"
     }
 
     tfe = {
-        version = "~> 0.49.0"
+      version = "~> 0.49.0"
     }
   }
 }
@@ -57,8 +57,8 @@ resource "vault_policy" "admin" {
 }
 
 data "tfe_project" "project" {
-  name = "hashistack"
-  organization = "${var.tfc_organization}"
+  name         = "hashistack"
+  organization = var.tfc_organization
 }
 
 resource "vault_jwt_auth_backend" "tfc" {
@@ -103,57 +103,58 @@ resource "tfe_project_variable_set" "project_vault_auth" {
 
 // Create variables within the variable set
 resource "tfe_variable" "tfc_vault_provider_auth" {
-  key          = "TFC_VAULT_PROVIDER_AUTH"
-  value        = "true"
-  category     = "env"
+  key             = "TFC_VAULT_PROVIDER_AUTH"
+  value           = "true"
+  category        = "env"
   variable_set_id = tfe_variable_set.project_vault_auth.id
 }
 
 resource "tfe_variable" "tfc_vault_addr" {
-  key          = "TFC_VAULT_ADDR"
-  value        = data.terraform_remote_state.hcp_clusters.outputs.vault_public_endpoint
-  category     = "env"
+  key             = "TFC_VAULT_ADDR"
+  value           = data.terraform_remote_state.hcp_clusters.outputs.vault_public_endpoint
+  category        = "env"
   variable_set_id = tfe_variable_set.project_vault_auth.id
 }
 
 resource "tfe_variable" "tfc_vault_namespace" {
-  key          = "TFC_VAULT_NAMESPACE"
-  value        = "admin"
-  category     = "env"
+  key             = "TFC_VAULT_NAMESPACE"
+  value           = "admin"
+  category        = "env"
   variable_set_id = tfe_variable_set.project_vault_auth.id
 }
 
 resource "tfe_variable" "tfc_vault_run_role" {
-  key          = "TFC_VAULT_RUN_ROLE"
-  value        = vault_jwt_auth_backend_role.project_admin_role.role_name
-  category     = "env"
+  key             = "TFC_VAULT_RUN_ROLE"
+  value           = vault_jwt_auth_backend_role.project_admin_role.role_name
+  category        = "env"
   variable_set_id = tfe_variable_set.project_vault_auth.id
 }
 
 resource "tfe_variable" "tfc_vault_auth_path" {
-  key          = "TFC_VAULT_AUTH_PATH"
-  value        = vault_jwt_auth_backend.tfc.path
-  category     = "env"
+  key             = "TFC_VAULT_AUTH_PATH"
+  value           = vault_jwt_auth_backend.tfc.path
+  category        = "env"
   variable_set_id = tfe_variable_set.project_vault_auth.id
 }
 
 resource "tfe_variable" "vault_addr" {
-  key          = "VAULT_ADDR"
-  value        = data.terraform_remote_state.hcp_clusters.outputs.vault_public_endpoint
-  category     = "env"
+  key             = "VAULT_ADDR"
+  value           = data.terraform_remote_state.hcp_clusters.outputs.vault_public_endpoint
+  category        = "env"
   variable_set_id = tfe_variable_set.project_vault_auth.id
 }
 
 resource "tfe_variable" "vault_namespace" {
-  key          = "VAULT_NAMESPACE"
-  value        = "admin"
-  category     = "env"
+  key             = "VAULT_NAMESPACE"
+  value           = "admin"
+  category        = "env"
   variable_set_id = tfe_variable_set.project_vault_auth.id
 }
 
 resource "tfe_variable" "vault_auth_method" {
-  key          = "auth_method"
-  value        = "dynamic_creds"
-  category     = "terraform"
+  key             = "auth_method"
+  value           = "dynamic_creds"
+  category        = "terraform"
   variable_set_id = tfe_variable_set.project_vault_auth.id
 }
+

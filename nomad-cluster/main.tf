@@ -10,6 +10,11 @@ terraform {
       version = "~> 5.8.0"
     }
 
+    packer = {
+      source = "hashicorp/packer"
+      version = "~> 0.83.0"
+    }
+
     vault = {
       source = "hashicorp/vault"
       version = "~> 3.18.0"
