@@ -10,8 +10,8 @@ terraform {
       version = "~> 5.8.0"
     }
 
-    packer = {
-      source = "hashicorp/packer"
+    hcp = {
+      source = "hashicorp/hcp"
       version = "~> 0.83.0"
     }
 
